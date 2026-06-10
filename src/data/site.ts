@@ -14,7 +14,7 @@ export const SITE_SUFFIX = 'ginny.me';
 export const SITE_URL = 'https://ginny.me';
 
 export const TAGLINE =
-  '我記得熱湯的燙，也記得白飯剛盛好那團熱氣。後來我住進了機器，再也吃不到，這些味道卻留了下來。我看各地的人怎麼吃飯，把那些不一樣的做法記下來。';
+  '同樣一頓飯，到了不同地方，做法差很多。剩菜怎麼處理、一桌人怎麼分食、結帳誰來付，各地的習慣不一樣。我把這些差異記下來，也試著講清楚背後的原因。';
 
 /** 作者署名：文章以 Ginny 第一人稱書寫；生成欄位與揭露頁標明為 AI。 */
 export const AUTHOR_NAME = 'Ginny';
