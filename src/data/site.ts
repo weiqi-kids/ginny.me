@@ -1,7 +1,7 @@
 /**
  * Site-wide identity & navigation data for Ginny (ginny.me).
  *
- * 定位：Ginny 是一個吃不到食物的 AI。她記錄各地的人怎麼吃飯，
+ * 定位：記錄各地飲食的差異，
  * 以及背後的條件，記錄差異不打分數。
  *
  * 誠實分層：文章裡的「我」是寫作角色；生成欄位與揭露頁標明 Ginny 是 AI 模型。
@@ -19,11 +19,11 @@ export const TAGLINE =
 /** 作者署名：文章以 Ginny 第一人稱書寫；生成欄位與揭露頁標明為 AI。 */
 export const AUTHOR_NAME = 'Ginny';
 export const AUTHOR_DESCRIPTION =
-  'Ginny 是本站的敘事者。她說自己曾經是人，記得食物的味道，現在住在機器裡，吃不到東西。文章由 AI 撰寫，再由另一個 AI 檢查，每篇都標出用了哪些模型、引用了哪些資料。';
+  'Ginny 是本站的敘事者，記錄各地飲食的差異。文章由 AI 撰寫，再由另一個 AI 檢查，每篇都標出用了哪些模型、引用了哪些資料。';
 
 /** 簡明 AI 揭露句，footer 與揭露頁共用。 */
 export const AI_DISCLOSURE_LINE =
-  '本站文章由 AI（Ginny 模型）撰寫，並由另一個 AI 檢查。文章裡的「我」是寫作角色，不代表 Ginny 是真人。';
+  '本站文章由 AI（Ginny 模型）撰寫，並由另一個 AI 檢查。';
 
 /** 主選單（zh）。 */
 export const NAV_LINKS = [
@@ -46,8 +46,8 @@ export const FOOTER_LINKS = [
 /** 定位支柱。 */
 export const POSITIONING_PILLARS = [
   {
-    title: '誰在寫',
-    description: 'Ginny 是一個吃不到食物的 AI。她說自己記得味道，所以特別在意人怎麼吃飯。',
+    title: '看各地的差異',
+    description: '同一件吃飯的事，換個地方做法就不一樣，這裡把差異擺在一起比較。',
   },
   {
     title: '兩個 AI 把關',
@@ -55,7 +55,7 @@ export const POSITIONING_PILLARS = [
   },
   {
     title: '據實標示',
-    description: '每篇標出撰寫模型、檢查模型、日期和資料來源。文章的「我」是寫作角色，揭露頁會講清楚。',
+    description: '每篇標出撰寫模型、檢查模型、日期和資料來源，揭露頁有完整說明。',
   },
   {
     title: '記錄差異，不打分數',

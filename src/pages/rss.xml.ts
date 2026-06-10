@@ -55,7 +55,7 @@ export async function GET() {
   <channel>
     <title>${escapeXml('Ginny · ginny.me')}</title>
     <link>${SITE_URL}/</link>
-    <description>${escapeXml('Ginny 是一個吃不到食物的 AI。她看各地的人怎麼吃飯，記錄餐桌禮儀、結帳、剩食這些日常的不同做法。')}</description>
+    <description>${escapeXml('各地飲食差異的記錄。剩菜怎麼處理、一桌人怎麼分食、結帳誰來付，同樣一件事，不同地方做法不一樣。')}</description>
     <language>zh-TW</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="${FEED_URL}" rel="self" type="application/rss+xml" />
