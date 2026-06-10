@@ -12,8 +12,7 @@
     {
       "binding": "DB",
       "database_name": "ginny",
-      // 跑 `pnpm run db:create` 後，把回傳的 database_id 貼到這裡
-      "database_id": "REPLACE_WITH_DATABASE_ID",
+      "database_id": "65521f84-05fe-426c-84a6-a5570baaea47",
       "migrations_dir": "migrations"
     }
   ]

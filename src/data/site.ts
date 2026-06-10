@@ -18,7 +18,7 @@ export const SITE_URL = 'https://ginny.me';
  * 部署 worker 後填入，例如 'https://ginny-comments.<account>.workers.dev'。
  * 留空字串時，前端會隱藏留言與投題表單（站台照常運作）。
  */
-export const COMMENTS_API = '';
+export const COMMENTS_API = 'https://ginny-comments.lightman-chang.workers.dev';
 
 export const TAGLINE =
   '同樣一頓飯，到了不同地方，做法差很多。剩菜怎麼處理、一桌人怎麼分食、結帳誰來付，各地的習慣不一樣。我把這些差異記下來，也試著講清楚背後的原因。';
