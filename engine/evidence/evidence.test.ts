@@ -69,8 +69,8 @@ function rec(over: Partial<SourceRecord> & Pick<SourceRecord, 'id' | 'sourceName
 // 白名單來源（name 取自 SOURCE_WHITELIST）。
 const TW_DGBAS = '中華民國主計總處（DGBAS）'; // stats-office, region TW
 const JP_ESTAT = '日本統計局 e-Stat'; // stats-office, region JP
-const US_BLS = 'U.S. Bureau of Labor Statistics (BLS)'; // stats-office, region US
-const OECD = 'OECD Social & Labour Statistics'; // stats-office, region OECD（跨文化）
+const US_BLS = 'USDA Economic Research Service'; // stats-office, region US（白名單 US 來源）
+const OECD = 'OECD Statistics (Health, Time Use, Food)'; // stats-office, region OECD（跨文化）
 
 describe('culturesToRegions（best-effort 對應）', () => {
   it('East Asia 含 TW/JP/KR', () => {
