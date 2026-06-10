@@ -1,0 +1,677 @@
+/* ============================================================================
+   global.css — Ginny (ginny.me) · 食物與用餐的跨文化態度觀察
+   單一設定檔（SINGLE CSS FILE）：本站只有這一份 CSS。
+   所有 CSS 自訂屬性（色彩 / 字型 / 字級量表 / 間距 / 圓角 / 陰影）+ 全部
+   應用層規則（reset / body / headings / prose / utilities / RWD 修正）都集中於此。
+
+   Palette intent —「褪色餐桌」：像舊照片裡的飯桌，呼應 Ginny 的鄉愁。
+   暖白紙底 (paper) + 暖墨字 (ink)，主重點色用焦糖褐 (accent，記憶／連結)，
+   warn 用壓暗番茄紅 (心跳／警示)，深底用溫潤的濃縮咖啡棕 (navy)。
+   不喧嘩、適合長文閱讀與列印。
+
+   字級量表：body = 24px，最小 18px、無例外（固定 rem，非 clamp）。
+   色彩主要使用 oklch；檔末 @supports 提供 hex fallback 供舊版瀏覽器。
+   ========================================================================== */
+
+:root {
+  /* ---- Brand colors（褪色餐桌）---- */
+  --color-accent: oklch(0.52 0.10 60);   /* 焦糖褐：主重點色、連結、記憶 */
+  --color-navy: oklch(0.28 0.03 55);     /* 濃縮咖啡棕：標題與深底 */
+  --color-paper: oklch(0.96 0.012 75);   /* 暖白紙色：頁面底 */
+  --color-ink: oklch(0.24 0.02 55);      /* 暖墨色：內文 */
+  --color-fog: oklch(0.90 0.008 75);     /* 暖霧灰：分隔／底紋 */
+  --color-warn: oklch(0.52 0.16 30);     /* 壓暗番茄紅：警示／心跳 */
+
+  /* ---- Food & dining subtopic accents ----
+     皆與主軸和諧：低彩度、大地／暖中性區間，彼此可辨但不喧賓奪主。 */
+  --color-topic-etiquette: oklch(0.50 0.08 55);   /* 餐桌禮儀 — 暖赭 */
+  --color-topic-sharing: oklch(0.47 0.06 150);    /* 共食與分食 — 鼠尾草綠 */
+  --color-topic-leftovers: oklch(0.50 0.07 95);   /* 剩食與惜食 — 橄欖芥末 */
+  --color-topic-rhythm: oklch(0.47 0.05 245);     /* 用餐節奏 — 冷藍灰 */
+  --color-topic-identity: oklch(0.50 0.08 345);   /* 食物與身分 — 灰梅紫 */
+
+  /* ---- Derived colors using color-mix() ---- */
+  --color-accent-subtle: color-mix(in oklch, var(--color-accent) 8%, var(--color-paper));
+  --color-accent-light: color-mix(in oklch, var(--color-accent) 14%, var(--color-paper));
+  --color-accent-hover: color-mix(in oklch, var(--color-accent) 85%, black);
+  --color-warn-hover: color-mix(in oklch, var(--color-warn) 85%, black);
+
+  /* ---- Dark background text system（深底＝濃縮咖啡棕）---- */
+  --color-on-dark-heading: oklch(1.00 0 0);
+  --color-on-dark-body: oklch(0.88 0.015 80);
+  --color-on-dark-meta: oklch(0.78 0.015 80);
+  --color-on-dark-link: oklch(0.80 0.09 70);
+
+  /* ---- Font family stacks ---- */
+  --font-serif: 'Noto Serif TC', 'Source Serif 4', serif;
+  --font-sans: 'Noto Sans TC', 'Inter', sans-serif;
+  --font-ui: 'Inter', 'Noto Sans TC', sans-serif;
+  --font-display: 'Source Serif 4', 'Noto Serif TC', serif;
+
+  /* ---- Canonical type scale ----
+     最小 18px、無例外。固定 rem（非 clamp）。 */
+  --text-xs: 1.125rem;   /* 18px */
+  --text-sm: 1.25rem;    /* 20px */
+  --text-base: 1.5rem;   /* 24px */
+  --text-lg: 1.75rem;    /* 28px */
+  --text-xl: 2rem;       /* 32px */
+  --text-2xl: 3rem;      /* 48px */
+  --text-3xl: 3.5rem;    /* 56px */
+
+  /* ---- Semantic type tokens（沿用既有命名，指向標準量表）---- */
+  --text-body: var(--text-base);  /* 24px */
+  --text-h1: var(--text-3xl);     /* 56px */
+  --text-h2: var(--text-xl);      /* 32px */
+  --text-h3: var(--text-lg);      /* 28px */
+  --text-meta: var(--text-xs);    /* 18px */
+  --text-badge: var(--text-xs);   /* 18px */
+
+  /* ---- Spacing ---- */
+  --space-page-x: clamp(1rem, 0.5rem + 2vw, 2rem);
+  --space-page-y: clamp(2rem, 1.5rem + 2vw, 3rem);
+  --space-card-gap: clamp(0.75rem, 0.5rem + 1vw, 1.25rem);
+  --space-section-gap: clamp(2.5rem, 2rem + 2vw, 4rem);
+
+  /* ---- Border radius ---- */
+  --radius-pill: 9999px;
+  --radius-card: 1.5rem;
+  --radius-sm: 0.5rem;
+
+  /* ---- Shadows ---- */
+  --shadow-card: 0 1px 3px oklch(0 0 0 / 0.08);
+  --shadow-card-hover: 0 4px 12px oklch(0 0 0 / 0.12);
+}
+
+/* ==========================================================================
+   Hex fallback for legacy browsers without oklch() support.
+   color-mix() 同樣缺乏舊版支援，因此衍生色亦給定靜態 hex 近似值。
+   ========================================================================== */
+@supports not (color: oklch(0 0 0)) {
+  :root {
+    /* Brand colors（褪色餐桌） */
+    --color-accent: #93662f;
+    --color-navy: #38291c;
+    --color-paper: #f7f1e8;
+    --color-ink: #2c241c;
+    --color-fog: #e4ddcf;
+    --color-warn: #aa4d3e;
+
+    /* Topic accents（食物與用餐） */
+    --color-topic-etiquette: #8a5a34;
+    --color-topic-sharing: #3d6b4f;
+    --color-topic-leftovers: #6f6726;
+    --color-topic-rhythm: #3a5a72;
+    --color-topic-identity: #834a64;
+
+    /* Derived colors (color-mix 無舊版支援，給靜態近似) */
+    --color-accent-subtle: #efe8da;
+    --color-accent-light: #e8dfcd;
+    --color-accent-hover: #75521f;
+    --color-warn-hover: #893c2f;
+
+    /* Dark background text system */
+    --color-on-dark-heading: #ffffff;
+    --color-on-dark-body: #ded3c2;
+    --color-on-dark-meta: #bdb2a0;
+    --color-on-dark-link: #d8b885;
+  }
+}
+
+/* ============================================================================
+   Reset
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* ============================================================================
+   Body defaults
+   ========================================================================== */
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  color: var(--color-ink);
+  background-color: var(--color-paper);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================================
+   Headings
+   ========================================================================== */
+
+h1 {
+  font-family: var(--font-serif);
+  font-size: var(--text-h1);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  font-family: var(--font-sans);
+  font-size: var(--text-h2);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+h3 {
+  font-family: var(--font-sans);
+  font-size: var(--text-h3);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+h4,
+h5,
+h6 {
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* ============================================================================
+   Links
+   ========================================================================== */
+
+a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+  transition: text-decoration-thickness 0.15s ease;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+  color: var(--color-accent-hover);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ============================================================================
+   Images
+   ========================================================================== */
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+/* ============================================================================
+   Skip to content (accessibility)
+   ========================================================================== */
+
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-ui);
+  font-size: var(--text-meta);
+  font-weight: 600;
+  color: var(--color-paper);
+  background-color: var(--color-navy);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+}
+
+.skip-to-content:focus {
+  top: 1rem;
+}
+
+/* ============================================================================
+   Prose — for Markdown/MDX content
+   ========================================================================== */
+
+.prose {
+  max-width: 68ch;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: var(--text-body);
+  line-height: 1.75;
+}
+
+.prose > * + * {
+  margin-top: 1em;
+}
+
+.prose h1 {
+  margin-top: 2em;
+}
+
+.prose h2 {
+  margin-top: 1.5em;
+}
+
+.prose h3 {
+  margin-top: 1.25em;
+}
+
+.prose h4,
+.prose h5,
+.prose h6 {
+  margin-top: 1.25em;
+}
+
+.prose p {
+  margin-top: 1em;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.5em;
+}
+
+.prose li + li {
+  margin-top: 0.25em;
+}
+
+.prose blockquote {
+  padding-left: 1.25em;
+  border-left: 3px solid var(--color-accent);
+  color: color-mix(in oklch, var(--color-ink) 70%, transparent);
+  font-style: italic;
+}
+
+.prose pre {
+  padding: 1em 1.25em;
+  overflow-x: auto;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-fog);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.prose code {
+  padding: 0.15em 0.35em;
+  border-radius: 3px;
+  background-color: var(--color-fog);
+  font-size: var(--text-sm);
+}
+
+.prose pre code {
+  padding: 0;
+  background-color: transparent;
+}
+
+.prose hr {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  border: none;
+  border-top: 1px solid var(--color-fog);
+}
+
+.prose a {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.prose img {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  border-radius: var(--radius-sm);
+}
+
+.prose table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  overflow-wrap: anywhere;
+  font-size: var(--text-meta);
+}
+
+.prose th,
+.prose td {
+  padding: 0.5em 0.75em;
+  border-bottom: 1px solid var(--color-fog);
+  text-align: left;
+}
+
+.prose th {
+  font-weight: 600;
+}
+
+/* ============================================================================
+   Container
+   ========================================================================== */
+
+.container {
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: var(--space-page-x);
+}
+
+/* ============================================================================
+   Utilities
+   ========================================================================== */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Font-size utilities — canonical type scale (最小 18px) */
+.fs-xs {
+  font-size: var(--text-xs);
+}
+
+.fs-sm {
+  font-size: var(--text-sm);
+}
+
+.fs-base {
+  font-size: var(--text-base);
+}
+
+.fs-lg {
+  font-size: var(--text-lg);
+}
+
+.fs-xl {
+  font-size: var(--text-xl);
+}
+
+.fs-2xl {
+  font-size: var(--text-2xl);
+}
+
+.fs-3xl {
+  font-size: var(--text-3xl);
+}
+
+/* ============================================================================
+   Desktop enhancements
+   ========================================================================== */
+
+@media (min-width: 768px) {
+  body {
+    line-height: 1.7;
+  }
+
+  .prose {
+    line-height: 1.8;
+  }
+
+  .prose > * + * {
+    margin-top: 1.25em;
+  }
+
+  .prose h2 {
+    margin-top: 1.75em;
+  }
+
+  .prose h3 {
+    margin-top: 1.5em;
+  }
+}
+
+/* ============================================================================
+   RWD fixes（原 rwd-fixes.css，併入此單一檔）
+   ========================================================================== */
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body,
+main,
+section,
+article,
+header,
+footer,
+nav,
+div {
+  min-width: 0;
+}
+
+#main-content {
+  overflow-x: hidden;
+}
+
+img,
+picture,
+video,
+canvas,
+svg,
+iframe,
+embed,
+object {
+  max-width: 100%;
+}
+
+iframe,
+embed,
+object {
+  width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+li,
+a {
+  overflow-wrap: break-word;
+}
+
+.container {
+  width: min(100%, 80rem);
+  max-width: 80rem;
+  min-width: 0;
+}
+
+.topnav__brand,
+.topnav__inner,
+.topnav__actions {
+  min-width: 0;
+}
+
+.topnav__brand .topnav__brand-zh {
+  font-size: clamp(1.125rem, 1.8vw, 1.45rem) !important;
+}
+
+@media (max-width: 1120px) {
+  .topnav__nav {
+    display: none !important;
+  }
+
+  .topnav__hamburger {
+    display: flex !important;
+  }
+}
+
+.hero {
+  overflow-x: hidden !important;
+}
+
+.hero__inner,
+.hero__left,
+.hero__right,
+.hero__focus,
+.hero__focus-primary,
+.hero__focus-secondary,
+.hero__focus-secondary-list,
+.trends-layout,
+.trends-layout__left,
+.trends-layout__right,
+.category-card,
+.latest-grid > *,
+.videos-grid > *,
+.articles-grid > * {
+  min-width: 0 !important;
+}
+
+.hero__badge {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: break-word;
+  font-size: clamp(1.125rem, 0.95rem + 0.55vw, 1.28rem) !important;
+  line-height: 1.45;
+}
+
+.hero__title {
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+.hero__title-line {
+  display: block;
+}
+
+.hero__buttons,
+.section-header,
+.video-tabs,
+.article-tabs {
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.hero__buttons a,
+.hero__buttons button,
+.trends-link {
+  max-width: 100%;
+  white-space: normal;
+}
+
+.hero__focus-title,
+.hero__focus-secondary-title,
+.category-card__title,
+.video-card h3,
+.article-card h3,
+.news-item h3 {
+  overflow-wrap: anywhere;
+}
+
+.prose,
+.prose table,
+.prose pre {
+  max-width: 100%;
+}
+
+.prose table {
+  display: block;
+  overflow-x: auto;
+}
+
+/* Homepage hero balance */
+#hero .hero__inner {
+  align-items: start !important;
+  grid-template-columns: minmax(0, 52%) minmax(0, 48%) !important;
+}
+
+#hero .hero__left {
+  gap: clamp(1.55rem, 1.05rem + 1vw, 2.15rem) !important;
+}
+
+#hero .hero__buttons,
+#hero .hero__trust {
+  margin-top: 0.15rem;
+}
+
+#hero .hero__subtitle {
+  max-width: 42ch !important;
+}
+
+@media (max-width: 1024px) {
+  #hero .hero__inner {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero__inner,
+  .hero__left {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .hero__badge {
+    padding: 0.45rem 0.9rem;
+    font-size: clamp(1.125rem, 4vw, 1.25rem) !important;
+    letter-spacing: 0.03em;
+  }
+
+  .hero__title {
+    font-size: clamp(2.05rem, 8.8vw, 3rem) !important;
+    line-height: 1.25 !important;
+  }
+
+  .hero__subtitle {
+    max-width: 100%;
+  }
+
+  .hero__buttons {
+    width: 100%;
+  }
+
+  .hero__buttons > * {
+    min-width: min(100%, 8.5rem);
+  }
+
+  .hero__trust {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem;
+    max-width: 100%;
+    overflow: visible !important;
+    padding-bottom: 0 !important;
+  }
+
+  .hero__trust-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0 !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .category-grid,
+  .latest-grid,
+  .trends-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
