@@ -17,7 +17,7 @@ export const GET: APIRoute = async () => {
     );
 
   const lines: string[] = [
-    '# Ginny · ginny.me — 完整內容索引',
+    '# Ginny · ginny.me 完整內容索引',
     '(Generated at build time)',
     '',
     '## 文章',
