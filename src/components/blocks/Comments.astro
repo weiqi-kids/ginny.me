@@ -1,0 +1,248 @@
+---
+import { COMMENTS_API } from '@/data/site';
+import { withBase } from '@/utils/url';
+
+interface Props {
+  slug: string;
+}
+const { slug } = Astro.props;
+const suggestHref = withBase('/zh/suggest/');
+---
+
+<section class="comments" data-comments data-slug={slug} data-api={COMMENTS_API}>
+  <h2 class="comments__title">聊聊你那邊怎麼吃</h2>
+  <p class="comments__intro">
+    你住的地方是怎麼處理這件事的，留言說說。想看的題目可以到
+    <a href={suggestHref}>建議新主題</a>丟給我。
+  </p>
+
+  <ul class="comments__list" data-list></ul>
+  <p class="comments__status" data-status>留言載入中。</p>
+
+  <form class="comments__form" data-form hidden>
+    <div class="comments__row">
+      <input class="comments__input" name="name" maxlength="40" placeholder="你的名字" required />
+    </div>
+    <textarea class="comments__textarea" name="body" maxlength="2000" rows="3" placeholder="想說的話" required></textarea>
+    <div class="comments__actions">
+      <button class="comments__submit" type="submit">送出留言</button>
+    </div>
+  </form>
+</section>
+
+<script>
+  const root = document.querySelector('[data-comments]');
+  if (root) {
+    const api = (root.getAttribute('data-api') || '').replace(/\/$/, '');
+    const slug = root.getAttribute('data-slug') || '';
+    const list = root.querySelector('[data-list]');
+    const status = root.querySelector('[data-status]');
+    const form = root.querySelector('[data-form]');
+
+    const fmtDate = (iso) => {
+      try {
+        return new Date(iso).toLocaleDateString('zh-TW', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+        });
+      } catch {
+        return '';
+      }
+    };
+
+    const makeItem = (c) => {
+      const li = document.createElement('li');
+      li.className = 'comments__item';
+      const head = document.createElement('div');
+      head.className = 'comments__head';
+      const name = document.createElement('span');
+      name.className = 'comments__name';
+      name.textContent = c.name;
+      const time = document.createElement('time');
+      time.className = 'comments__time';
+      time.textContent = fmtDate(c.created_at);
+      head.append(name, time);
+      const body = document.createElement('p');
+      body.className = 'comments__body';
+      body.textContent = c.body;
+      li.append(head, body);
+      return li;
+    };
+
+    const render = (items) => {
+      list.replaceChildren();
+      if (!items.length) {
+        status.textContent = '還沒有人留言，你可以當第一個。';
+        return;
+      }
+      status.textContent = '';
+      for (const c of items) list.append(makeItem(c));
+    };
+
+    if (!api) {
+      status.textContent = '留言功能即將開放。';
+    } else {
+      fetch(`${api}/api/comments?slug=${encodeURIComponent(slug)}`)
+        .then((r) => r.json())
+        .then((d) => render(d.comments || []))
+        .catch(() => {
+          status.textContent = '留言載入失敗，稍後再試。';
+        });
+
+      form.hidden = false;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = form.querySelector('button');
+        const fd = new FormData(form);
+        const payload = {
+          slug,
+          name: (fd.get('name') || '').toString().trim(),
+          body: (fd.get('body') || '').toString().trim(),
+        };
+        if (!payload.name || !payload.body) return;
+        btn.disabled = true;
+        status.textContent = '送出中。';
+        try {
+          const r = await fetch(`${api}/api/comments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const d = await r.json();
+          if (!r.ok) {
+            status.textContent = d.error || '送出失敗，稍後再試。';
+            btn.disabled = false;
+            return;
+          }
+          if (list.querySelector('.comments__item') || d.comment) status.textContent = '';
+          list.append(makeItem(d.comment));
+          form.reset();
+          btn.disabled = false;
+        } catch {
+          status.textContent = '送出失敗，稍後再試。';
+          btn.disabled = false;
+        }
+      });
+    }
+  }
+</script>
+
+<style>
+  .comments {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-top: 1px solid var(--color-fog);
+    padding-top: 2rem;
+  }
+
+  .comments__title {
+    font-family: var(--font-sans);
+    font-size: var(--text-h3);
+    color: var(--color-ink);
+  }
+
+  .comments__intro {
+    font-size: var(--text-meta);
+    line-height: 1.7;
+    color: color-mix(in oklch, var(--color-ink) 70%, transparent);
+  }
+
+  .comments__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .comments__item {
+    border: 1px solid var(--color-fog);
+    border-radius: var(--radius-card);
+    padding: 1rem 1.25rem;
+  }
+
+  .comments__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .comments__name {
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  .comments__time {
+    font-family: var(--font-ui);
+    font-size: var(--text-meta);
+    color: var(--color-muted, color-mix(in oklch, var(--color-ink) 55%, transparent));
+  }
+
+  .comments__body {
+    line-height: 1.7;
+    color: color-mix(in oklch, var(--color-ink) 88%, transparent);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .comments__status {
+    font-size: var(--text-meta);
+    color: color-mix(in oklch, var(--color-ink) 60%, transparent);
+  }
+
+  .comments__form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .comments__input,
+  .comments__textarea {
+    width: 100%;
+    font: inherit;
+    font-size: var(--text-meta);
+    color: var(--color-ink);
+    background-color: var(--color-paper);
+    border: 1px solid var(--color-fog);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.8rem;
+  }
+
+  .comments__input:focus-visible,
+  .comments__textarea:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
+  }
+
+  .comments__textarea {
+    resize: vertical;
+    min-height: 4rem;
+  }
+
+  .comments__submit {
+    align-self: flex-start;
+    font: inherit;
+    font-size: var(--text-meta);
+    font-weight: 600;
+    color: var(--color-paper);
+    background-color: var(--color-accent);
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 0.55rem 1.4rem;
+    cursor: pointer;
+  }
+
+  .comments__submit:hover {
+    background-color: var(--color-accent-hover);
+  }
+
+  .comments__submit:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+</style>

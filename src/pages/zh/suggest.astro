@@ -1,0 +1,239 @@
+---
+import Base from '@/layouts/Base.astro';
+import { COMMENTS_API } from '@/data/site';
+---
+
+<Base
+  title="建議新主題｜ginny.me"
+  description="你想看 Ginny 寫哪一種飲食差異，丟一個主題給我。"
+  lang="zh"
+>
+  <section class="suggest container" data-suggest data-api={COMMENTS_API}>
+    <h1 class="suggest__title">建議新主題</h1>
+    <p class="suggest__intro">
+      你想看哪一種飲食差異，這裡丟給我。像是餐桌上的座位、敬酒的規矩、給不給小費，
+      或是你那邊有什麼吃法，別的地方的人會覺得奇怪。
+    </p>
+
+    <form class="suggest__form" data-form hidden>
+      <input class="suggest__input" name="title" maxlength="120" placeholder="想看的主題（必填）" required />
+      <textarea class="suggest__textarea" name="note" maxlength="1000" rows="3" placeholder="想多說一點（可留白）"></textarea>
+      <input class="suggest__input" name="name" maxlength="40" placeholder="你的名字（可留白）" />
+      <button class="suggest__submit" type="submit">送出主題</button>
+    </form>
+
+    <p class="suggest__status" data-status>主題載入中。</p>
+
+    <h2 class="suggest__list-title">大家想看的</h2>
+    <ul class="suggest__list" data-list></ul>
+  </section>
+</Base>
+
+<script>
+  const root = document.querySelector('[data-suggest]');
+  if (root) {
+    const api = (root.getAttribute('data-api') || '').replace(/\/$/, '');
+    const list = root.querySelector('[data-list]');
+    const status = root.querySelector('[data-status]');
+    const form = root.querySelector('[data-form]');
+
+    const makeItem = (t) => {
+      const li = document.createElement('li');
+      li.className = 'suggest__item';
+      const title = document.createElement('p');
+      title.className = 'suggest__item-title';
+      title.textContent = t.title;
+      li.append(title);
+      if (t.note) {
+        const note = document.createElement('p');
+        note.className = 'suggest__item-note';
+        note.textContent = t.note;
+        li.append(note);
+      }
+      if (t.name) {
+        const by = document.createElement('p');
+        by.className = 'suggest__item-by';
+        by.textContent = `來自 ${t.name}`;
+        li.append(by);
+      }
+      return li;
+    };
+
+    const render = (items) => {
+      list.replaceChildren();
+      if (!items.length) {
+        status.textContent = '還沒有人提主題，你可以當第一個。';
+        return;
+      }
+      status.textContent = '';
+      for (const t of items) list.append(makeItem(t));
+    };
+
+    if (!api) {
+      status.textContent = '投題功能即將開放。';
+    } else {
+      fetch(`${api}/api/topics`)
+        .then((r) => r.json())
+        .then((d) => render(d.topics || []))
+        .catch(() => {
+          status.textContent = '主題載入失敗，稍後再試。';
+        });
+
+      form.hidden = false;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = form.querySelector('button');
+        const fd = new FormData(form);
+        const payload = {
+          title: (fd.get('title') || '').toString().trim(),
+          note: (fd.get('note') || '').toString().trim(),
+          name: (fd.get('name') || '').toString().trim(),
+        };
+        if (!payload.title) return;
+        btn.disabled = true;
+        status.textContent = '送出中。';
+        try {
+          const r = await fetch(`${api}/api/topics`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const d = await r.json();
+          if (!r.ok) {
+            status.textContent = d.error || '送出失敗，稍後再試。';
+            btn.disabled = false;
+            return;
+          }
+          list.prepend(makeItem(d.topic));
+          status.textContent = '收到了，謝謝。';
+          form.reset();
+          btn.disabled = false;
+        } catch {
+          status.textContent = '送出失敗，稍後再試。';
+          btn.disabled = false;
+        }
+      });
+    }
+  }
+</script>
+
+<style>
+  .suggest {
+    padding-block: var(--space-section-gap);
+    max-width: 52rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .suggest__title {
+    font-family: var(--font-serif);
+    font-size: var(--text-h1);
+    color: var(--color-navy);
+  }
+
+  .suggest__intro {
+    line-height: 1.8;
+    color: color-mix(in oklch, var(--color-ink) 82%, transparent);
+  }
+
+  .suggest__form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid var(--color-fog);
+    border-radius: var(--radius-card);
+    background-color: var(--color-accent-subtle);
+  }
+
+  .suggest__input,
+  .suggest__textarea {
+    width: 100%;
+    font: inherit;
+    font-size: var(--text-meta);
+    color: var(--color-ink);
+    background-color: var(--color-paper);
+    border: 1px solid var(--color-fog);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.8rem;
+  }
+
+  .suggest__input:focus-visible,
+  .suggest__textarea:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
+  }
+
+  .suggest__textarea {
+    resize: vertical;
+  }
+
+  .suggest__submit {
+    align-self: flex-start;
+    font: inherit;
+    font-size: var(--text-meta);
+    font-weight: 600;
+    color: var(--color-paper);
+    background-color: var(--color-accent);
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 0.55rem 1.4rem;
+    cursor: pointer;
+  }
+
+  .suggest__submit:hover {
+    background-color: var(--color-accent-hover);
+  }
+
+  .suggest__submit:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  .suggest__status {
+    font-size: var(--text-meta);
+    color: color-mix(in oklch, var(--color-ink) 60%, transparent);
+  }
+
+  .suggest__list-title {
+    margin-top: 1rem;
+    font-family: var(--font-sans);
+    font-size: var(--text-h3);
+    color: var(--color-ink);
+  }
+
+  .suggest__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .suggest__item {
+    border: 1px solid var(--color-fog);
+    border-radius: var(--radius-card);
+    padding: 1rem 1.25rem;
+  }
+
+  .suggest__item-title {
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  .suggest__item-note {
+    margin-top: 0.3rem;
+    font-size: var(--text-meta);
+    line-height: 1.7;
+    color: color-mix(in oklch, var(--color-ink) 75%, transparent);
+  }
+
+  .suggest__item-by {
+    margin-top: 0.3rem;
+    font-family: var(--font-ui);
+    font-size: var(--text-meta);
+    color: color-mix(in oklch, var(--color-ink) 55%, transparent);
+  }
+</style>

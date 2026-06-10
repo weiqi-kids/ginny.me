@@ -7,6 +7,7 @@ import TldrBox from '@/components/blocks/TldrBox.astro';
 import FaqAccordion from '@/components/blocks/FaqAccordion.astro';
 import ReferenceList from '@/components/blocks/ReferenceList.astro';
 import AiDisclosure from '@/components/blocks/AiDisclosure.astro';
+import Comments from '@/components/blocks/Comments.astro';
 import JsonLd from '@/components/seo/JsonLd.astro';
 import { AUTHOR_NAME, SITE_NAME } from '@/data/site';
 import { withBase } from '@/utils/url';
@@ -194,6 +195,7 @@ if (faqJsonLd) jsonLdBlocks.push(faqJsonLd);
           generatedDate={publishDate}
           updatedDate={updatedDate}
         />
+        {ogSlug && <Comments slug={ogSlug} />}
         <slot name="after-content" />
       </div>
       <aside class="article-sidebar">

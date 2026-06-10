@@ -1,0 +1,16 @@
+{
+  "name": "ginny-comments",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:create": "wrangler d1 create ginny",
+    "db:migrate": "wrangler d1 migrations apply ginny --remote",
+    "db:migrate:local": "wrangler d1 migrations apply ginny --local"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260101.0",
+    "wrangler": "^4.20.0"
+  }
+}

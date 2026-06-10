@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ginny-comments",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-06-10",
+  "observability": { "enabled": true },
+  "vars": {
+    // 只允許這些來源跨域呼叫（草稿用 github.io，買網址後 ginny.me 已預先列入）
+    "ALLOWED_ORIGINS": "https://weiqi-kids.github.io,https://ginny.me"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ginny",
+      // 跑 `pnpm run db:create` 後，把回傳的 database_id 貼到這裡
+      "database_id": "REPLACE_WITH_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ]
+}
