@@ -46,10 +46,12 @@ jobs:
       - name: Build
         run: pnpm build
         # postbuild script runs pagefind automatically (see package.json)
-        # push-to-main → inputs.deploy_target is empty → 'production' (custom domain + CNAME).
-        # workflow_dispatch → use the chosen deploy_target (default 'preview' = github.io draft).
+        # 草稿階段：push-to-main 預設 'preview'（github.io 草稿，不寫 CNAME）。
+        # 買網址後上線：把下面的 'preview' 改成 'production'（＝SOP 的「換一個參數就上線」），
+        # 屆時 push-to-main 會寫入 dist/CNAME=ginny.me 切到自訂網域。
+        # workflow_dispatch 仍可隨時手動選 preview / production。
         env:
-          DEPLOY_TARGET: ${{ github.event.inputs.deploy_target || 'production' }}
+          DEPLOY_TARGET: ${{ github.event.inputs.deploy_target || 'preview' }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
