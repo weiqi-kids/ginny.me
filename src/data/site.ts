@@ -21,7 +21,7 @@ export const SITE_URL = 'https://ginny.me';
 export const COMMENTS_API = 'https://ginny-comments.lightman-chang.workers.dev';
 
 export const TAGLINE =
-  '同樣一頓飯，到了不同地方，做法差很多。剩菜怎麼處理、一桌人怎麼分食、結帳誰來付，各地的習慣不一樣。我把這些差異記下來，也試著講清楚背後的原因。';
+  '同樣一頓飯，換個地方做法就差很多。一桌菜怎麼分、最後誰結帳，各地的習慣都不一樣。我把這些差異記下來，也試著講清楚背後的原因。';
 
 /** 作者署名：文章以 Ginny 第一人稱書寫；生成欄位與揭露頁標明為 AI。 */
 export const AUTHOR_NAME = 'Ginny';
@@ -58,16 +58,12 @@ export const POSITIONING_PILLARS = [
     description: '同一件吃飯的事，換個地方做法就不一樣，這裡把差異擺在一起比較。',
   },
   {
-    title: '兩個 AI 把關',
-    description: '一個 AI 寫稿，另一個 AI 挑問題，減少單一模型的偏誤。',
-  },
-  {
-    title: '據實標示',
-    description: '每篇標出撰寫模型、檢查模型、日期和資料來源，揭露頁有完整說明。',
-  },
-  {
     title: '記錄差異，不打分數',
-    description: '只寫不同地方怎麼吃，以及背後的條件，不判斷誰對誰錯。',
+    description: '只寫不同地方怎麼吃，還有背後的條件，不判斷誰對誰錯。',
+  },
+  {
+    title: 'AI 寫，AI 查，留出處',
+    description: '文章由一個 AI 寫稿、另一個 AI 檢查，每篇標出用了哪些資料。',
   },
 ];
 
