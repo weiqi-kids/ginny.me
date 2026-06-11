@@ -30,6 +30,7 @@ import yaml from 'js-yaml';
 import type { Selection, AnchorResult, EvidenceResult } from '../schemas.js';
 import { llmText } from '../lib/llm.js';
 import { PIPELINE_VERSION, SPEC_VERSION } from '../version.js';
+import { WRITING_STYLE } from '../config/criteria.js';
 import { createLogger } from '../lib/log.js';
 
 // 生產用 schema：frontmatter 必須過這一關（不是引擎自己的 schema）。
@@ -96,6 +97,9 @@ function buildSystemPrompt(): string {
        - 每節說明：在這個文化的處境／制度／歷史下，這個態度為何「合理」。
   3. 收束一節「## 站在這個分歧之上」：
        - 不替任何一方下結論，只把分歧本身放回讀者眼前，說明它揭示了什麼。
+
+── 寫作風格（去 AI 感，違反即失敗）──
+${WRITING_STYLE.guidance}
 
 只輸出文章本文（markdown），第一行不要 frontmatter，不要 code fence 包整篇。
 全文用繁體中文。

@@ -33,7 +33,7 @@ import yaml from 'js-yaml';
 
 import { llmStructured, llmText } from '../lib/llm.js';
 import { CritiqueVerdictSchema, type CritiqueVerdict } from '../schemas.js';
-import { STANCE_RISK_CRITERIA } from '../config/criteria.js';
+import { STANCE_RISK_CRITERIA, WRITING_STYLE } from '../config/criteria.js';
 import { createLogger } from '../lib/log.js';
 import type { DraftArticle } from '../write/index.js';
 
@@ -119,6 +119,9 @@ function buildReviserSystemPrompt(): string {
   - 保住「AI 跨文化觀察者」的第一人稱口吻（例如「我作為一個觀察者……」）。
   - 保住中立：呈現分歧、不評判、把態度歸因於處境／制度／歷史，不歸因於民族性。
   - 保住原意與整體結構：不要重寫沒被點名的段落，不要增刪論點，只動有問題的句子。
+
+修訂後的句子同樣要守住去 AI 感的寫作風格（違反即失敗）：
+${WRITING_STYLE.guidance}
 
 只輸出修訂後的完整文章本文（繁體中文 markdown），第一行不要 frontmatter，不要 code fence 包整篇。
 `.trim();

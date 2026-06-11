@@ -22,13 +22,32 @@ const strictMode = process.env.CONTENT_AUDIT_STRICT === '1';
 // Generic AI-tone sentence patterns — language agnostic for cross-cultural content
 const aiPhrasePatterns = [
   ['不是…而是', /不是.+?而是/g],
+  ['並非…而是', /並非.+?而是/g],
   ['不只是…更是', /不只是.+?更是/g],
+  ['不僅僅是…更是', /不僅僅?是.+?更是/g],
+  ['事實上，', /(^|[，。！？「（\s])事實上[，,]/g],
+  ['不可否認的是', /不可否認的是/g],
   ['換句話說', /換句話說/g],
   ['這件事值得說清楚', /這件事值得說清楚/g],
   ['真正的問題是', /真正的問題是/g],
   ['我一直覺得', /我一直覺得/g],
   ['老實講', /老實講/g],
   ['有人說', /有人說/g],
+];
+
+// 破折號：內文不准出現全形破折號（—，U+2014）或框線符號（─，U+2500）。
+// 只抓這兩個字元，故 YAML frontmatter 的 --- 圍欄（ASCII 連字號）不會誤判。
+const dashPattern = /[—─]/g;
+
+// 文字黑名單（去 AI 感寫作限制）：出現即違規。
+const blacklistWords = [
+  '深入探討',
+  '交織',
+  '總體而言',
+  '值得注意的是',
+  '顯而易見',
+  '不言而喻',
+  '縮影',
 ];
 
 // Vague-citation patterns — generic, not domain-specific
@@ -74,6 +93,12 @@ function walk(dir) {
 function warningMessage(type, label) {
   if (type === 'ai-phrase') {
     return `偵測到 AI 感句型「${label}」，建議人工檢查是否符合作者語氣。`;
+  }
+  if (type === 'dash') {
+    return `偵測到破折號「${label}」，寫作限制禁用破折號，請拆成兩句或改用一般標點。`;
+  }
+  if (type === 'blacklist-word') {
+    return `偵測到黑名單詞彙「${label}」，寫作限制禁用此詞，請改寫。`;
   }
   if (type === 'vague-reference') {
     return `偵測到模糊引用「${label}」，建議人工檢查是否需要補來源或改成主編判讀。`;
@@ -126,6 +151,29 @@ function collectFindings(file) {
         message: warningMessage('raw-enum', label),
       });
     }
+
+    const dashMatches = lineText.match(dashPattern) || [];
+    for (const label of dashMatches) {
+      findings.push({
+        file: relativeFile,
+        line: lineNo,
+        type: 'dash',
+        label,
+        message: warningMessage('dash', label),
+      });
+    }
+
+    for (const label of blacklistWords) {
+      if (lineText.includes(label)) {
+        findings.push({
+          file: relativeFile,
+          line: lineNo,
+          type: 'blacklist-word',
+          label,
+          message: warningMessage('blacklist-word', label),
+        });
+      }
+    }
   }
 
   return findings;
@@ -148,12 +196,16 @@ function writeStepSummary(findings) {
   if (!summaryPath) return;
 
   const aiCount = findings.filter((item) => item.type === 'ai-phrase').length;
+  const dashCount = findings.filter((item) => item.type === 'dash').length;
+  const blacklistCount = findings.filter((item) => item.type === 'blacklist-word').length;
   const vagueCount = findings.filter((item) => item.type === 'vague-reference').length;
   const rawEnumCount = findings.filter((item) => item.type === 'raw-enum').length;
 
   let markdown = '# Content audit summary\n\n';
   markdown += `- Total findings: ${findings.length}\n`;
   markdown += `- AI phrase warnings: ${aiCount}\n`;
+  markdown += `- Dash warnings: ${dashCount}\n`;
+  markdown += `- Blacklist word warnings: ${blacklistCount}\n`;
   markdown += `- Vague reference warnings: ${vagueCount}\n`;
   markdown += `- Raw enum warnings: ${rawEnumCount}\n\n`;
 
@@ -174,6 +226,8 @@ const files = walk(root);
 const findings = files.flatMap((file) => collectFindings(file));
 
 const aiCount = findings.filter((item) => item.type === 'ai-phrase').length;
+const dashCount = findings.filter((item) => item.type === 'dash').length;
+const blacklistCount = findings.filter((item) => item.type === 'blacklist-word').length;
 const vagueCount = findings.filter((item) => item.type === 'vague-reference').length;
 const rawEnumCount = findings.filter((item) => item.type === 'raw-enum').length;
 
@@ -181,6 +235,8 @@ console.log(`Content audit mode: ${strictMode ? 'strict mode' : 'warning mode'}`
 console.log(`Scanned files: ${files.length} (.mdx + .md)`);
 console.log(`Total findings: ${findings.length}`);
 console.log(`- AI phrase warnings: ${aiCount}`);
+console.log(`- Dash warnings: ${dashCount}`);
+console.log(`- Blacklist word warnings: ${blacklistCount}`);
 console.log(`- Vague reference warnings: ${vagueCount}`);
 console.log(`- Raw enum warnings: ${rawEnumCount}`);
 
