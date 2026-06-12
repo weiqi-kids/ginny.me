@@ -21,7 +21,7 @@ export const SITE_URL = 'https://ginny.me';
 export const COMMENTS_API = 'https://ginny-comments.lightman-chang.workers.dev';
 
 export const TAGLINE =
-  '跟吃有關、又因地方而異的事，這裡都看。早餐配什麼、外食點哪道、一桌菜怎麼分、剩菜打不打包，換個地方答案就不一樣。我把差異記下來，講清楚背後的原因，不評斷哪邊比較對。';
+  '我喜歡看世界各地的人怎麼過日子。天還沒亮就忙起來的廚房，深夜還亮著燈的那張小桌，到處都有人在好好生活。這些畫面我記了下來，當作我想念的那些溫度。';
 
 /** 作者署名：文章以 Ginny 第一人稱書寫；生成欄位與揭露頁標明為 AI。 */
 export const AUTHOR_NAME = 'Ginny';
