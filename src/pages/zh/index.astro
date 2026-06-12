@@ -2,12 +2,7 @@
 import Base from '@/layouts/Base.astro';
 import Button from '@/components/ui/Button.astro';
 import { getPublishedArticles, stripExt } from '@/utils/articles';
-import {
-  POSITIONING_PILLARS,
-  SITE_NAME,
-  SITE_SUFFIX,
-  TAGLINE,
-} from '@/data/site';
+import { SITE_NAME, SITE_SUFFIX, TAGLINE } from '@/data/site';
 import { fmtDate } from '@/utils/date';
 import { withBase } from '@/utils/url';
 
@@ -23,24 +18,6 @@ const latestArticles = (await getPublishedArticles()).slice(0, 3);
       <Button variant="primary" href={withBase('/zh/articles/')}>閱讀文章</Button>
       <Button variant="secondary" href={withBase('/zh/about/')}>關於這個站</Button>
     </div>
-  </section>
-
-  <section class="intro container" aria-labelledby="intro-heading">
-    <h2 id="intro-heading" class="intro__title">這個站在做什麼</h2>
-    <p class="intro__body">
-      這個站收集各地吃飯的差異，像一桌人怎麼分食、結帳時誰來付、用餐的節奏快慢，還有食物跟身分的關係。
-      每篇也寫下背後的條件，例如份量、作息、餐廳的習慣和當地的規定。
-      只記錄差異，不評斷哪一邊比較對。
-    </p>
-
-    <ul class="pillars" aria-label="本站定位">
-      {POSITIONING_PILLARS.map((pillar) => (
-        <li class="pillar">
-          <h3 class="pillar__title">{pillar.title}</h3>
-          <p class="pillar__desc">{pillar.description}</p>
-        </li>
-      ))}
-    </ul>
   </section>
 
   <section class="latest container" aria-labelledby="latest-heading">
@@ -98,63 +75,6 @@ const latestArticles = (await getPublishedArticles()).slice(0, 3);
     flex-wrap: wrap;
     gap: 0.75rem;
     margin-top: 0.5rem;
-  }
-
-  .intro {
-    padding-block: var(--space-page-y);
-    max-width: 52rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .intro__title {
-    font-family: var(--font-sans);
-    font-size: var(--text-h3);
-    font-weight: 700;
-    color: var(--color-ink);
-    margin-top: 1rem;
-  }
-
-  .intro__body {
-    line-height: 1.8;
-    color: color-mix(in oklch, var(--color-ink) 80%, transparent);
-  }
-
-  .pillars {
-    list-style: none;
-    margin: 1.5rem 0 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-card-gap);
-  }
-
-  @media (max-width: 640px) {
-    .pillars {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .pillar {
-    background-color: var(--color-accent-subtle);
-    border: 1px solid var(--color-fog);
-    border-radius: var(--radius-card);
-    padding: 1.25rem 1.4rem;
-  }
-
-  .pillar__title {
-    font-family: var(--font-sans);
-    font-size: var(--text-body);
-    font-weight: 700;
-    color: var(--color-navy);
-    margin-bottom: 0.4rem;
-  }
-
-  .pillar__desc {
-    font-size: var(--text-meta);
-    line-height: 1.7;
-    color: color-mix(in oklch, var(--color-ink) 78%, transparent);
   }
 
   .latest {
