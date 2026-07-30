@@ -188,3 +188,7 @@ docs/
 - 文章 `sources` 目前為 seed 階段的真實頂層 landing page；待 pipeline 替換為精確抓取來源。
 - C2PA manifest 簽署尚未實作（`coverC2paVerified` 欄位預留）。
 - 站名／標語、Ginny 背景故事深度的最終文案，上線前由站主拍板。
+
+---
+
+Maintained by Light. I build and maintain websites with AI as a service: [arthurs.tw](https://arthurs.tw/?utm_source=github&utm_medium=readme&utm_campaign=oss)
